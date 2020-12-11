@@ -5,6 +5,7 @@ import config from "./config";
 
 export interface IRequest extends Request {
   user?: {
+    _id?: string;
     name?: string;
     email?: string;
     password?: string;
