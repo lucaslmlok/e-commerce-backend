@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import data from "./data";
 import config from "./config";
 import userRoute from "./routes/userRoute";
+import productRoute from "./routes/productRoute";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ const PORT = 5000;
 app.use(bodyParser.json());
 
 app.use("/api/users", userRoute);
+app.use("/api/products", productRoute);
 
 app.get("/api/products/:id", (req, res) => {
   const productId = req.params.id;
