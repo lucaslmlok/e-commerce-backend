@@ -5,12 +5,32 @@ import { IRequest, isAuth } from "../util";
 
 const router = express.Router();
 
+router.get("/", isAuth, async (req: IRequest, res: Response) => {
+  const user = req.user;
+
+  const orders = await Order.find({
+    user: {
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+    },
+  }).sort("-orderDate");
+
+  if (orders) {
+    res.send(orders);
+  } else {
+    return res.status(500).send({ msg: "Error in Getting Orders" });
+  }
+});
+
 router.post("/", isAuth, async (req: IRequest, res: Response) => {
   const user = req.user;
   const { cartItems, shipping, payment, price } = req.body;
 
   const newOrder = await Order.create({
     items: cartItems.map((v) => {
+      v.productId = v.product;
+      delete v.product;
       delete v.countInStock;
       return v;
     }),
@@ -18,7 +38,7 @@ router.post("/", isAuth, async (req: IRequest, res: Response) => {
     shipping,
     payment,
     user: {
-      _id: user._id,
+      userId: user._id,
       name: user.name,
       email: user.email,
     },

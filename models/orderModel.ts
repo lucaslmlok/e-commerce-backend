@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 export interface IOrder extends mongoose.Document {
   items: {
-    product: string;
+    productId: string;
     name: string;
     image: string;
     price: number;
@@ -22,7 +22,7 @@ export interface IOrder extends mongoose.Document {
   };
   payment: { paymentMethod: string };
   user: {
-    _id: string;
+    userId: string;
     name: string;
     email: string;
   };
@@ -32,7 +32,13 @@ export interface IOrder extends mongoose.Document {
 
 const orderSchema = new mongoose.Schema({
   items: [
-    { id: String, name: String, image: String, price: String, qty: Number },
+    {
+      productId: String,
+      name: String,
+      image: String,
+      price: String,
+      qty: Number,
+    },
   ],
   price: {
     itemsPrice: Number,
@@ -50,7 +56,7 @@ const orderSchema = new mongoose.Schema({
     paymentMethod: String,
   },
   user: {
-    _id: String,
+    userId: String,
     name: String,
     email: String,
   },
