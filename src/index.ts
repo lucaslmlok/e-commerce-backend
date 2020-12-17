@@ -2,16 +2,17 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
+import cors from "cors";
 
-import data from "./data";
+dotenv.config();
+
 import config from "./config";
 import userRoute from "./routes/userRoute";
 import productRoute from "./routes/productRoute";
 import orderRoute from "./routes/orderRoute";
 
-dotenv.config();
-
 const mongodbUrl = config.MONGODB_URL;
+
 mongoose
   .connect(mongodbUrl, {
     useNewUrlParser: true,
@@ -23,26 +24,13 @@ mongoose
   });
 
 const app = express();
-const PORT = 5000;
+app.use(cors());
+const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
 app.use("/api/order", orderRoute);
-
-app.get("/api/products/:id", (req, res) => {
-  const productId = req.params.id;
-  const product = data.products.find((prod) => prod._id === productId);
-  if (product) {
-    res.send(product);
-  } else {
-    res.status(404).send({ msg: "Product not found" });
-  }
-});
-
-app.get("/api/products", (req, res) => {
-  res.send(data.products);
-});
 
 app.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
